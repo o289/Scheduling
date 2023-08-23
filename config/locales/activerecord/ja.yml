@@ -1,0 +1,16 @@
+ja:
+  activerecord:
+    models:
+      user: 'ユーザー'
+      task: 'タスク'
+    attributes:
+      user:
+        name: '名前'
+        profile: 'プロフィール'
+        email: 'メールアドレス'
+        password: 'パスワード'
+        password_confirmation: 'パスワード確認'
+      task:
+        title: 'タスク'
+        in_detail: '説明'
+        start_time: '開始時刻'
