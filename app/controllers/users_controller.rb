@@ -1,11 +1,28 @@
 class UsersController < ApplicationController
     before_action :authenticate_user!
-    before_action :find_params, only: [:show, :edit, :update, :destroy]
+    before_action :find_params, only: [:show, :edit, :update, :destroy, :user_tasks]
 
     def index
         @users = User.where.not(id: current_user.id)
     end
     def show       
+        @current_entry = Entry.where(user_id: current_user.id)
+        @another_entry = Entry.where(user_id: @user.id)
+        unless @user.id == current_user.id
+            @current_entry.each do |current|
+                @another_entry.each do |another|
+                if current.room_id == another.room_id then
+                    @is_room = true
+                    @room_id = current.room_id
+                end
+                end
+            end
+        if @is_room
+        else
+            @room = Room.new
+            @entry = Entry.new
+        end
+        end
     end
 
     def edit
@@ -43,10 +60,14 @@ class UsersController < ApplicationController
         @users = user.followers
     end
 
+    def user_tasks
+        
+    end
+
     private
     # 保存するパラメータを記載
     def user_params
-        params.require(:user).permit(:name, :profile, :email)
+        params.require(:user).permit(:name, :profile, :email, :image)
     end
 
     # ユーザーを取得する

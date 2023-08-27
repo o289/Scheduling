@@ -1,16 +1,30 @@
 <div class="card" style="width: 18rem;">
+    <% if @user.image.attached? %>
+        <%= image_tag @user.image, class: "card-img-top" %>
+    <% else %>
+        <%= image_tag '/no-image.png', class: "card-img-top" %>
+    <% end %>
     <div class="card-body">
         <h5 class="card-title"><%= @user.name %></h5>
         <p class="card-text"><%= @user.profile %></p>
     </div>
     <div class="card-body">
-       
-        <h3><%= @user.name %>の予定一覧</h3>
-        <% @user.tasks.each do |user| %>
-            <p class="d-block">
-                <%= user.title %>
-                <%= user.start_time.strftime("%m月%d日") %>
-            <p>
+        <% if @user.id == current_user.id || ((@user.already_followed?(current_user)) && (current_user.already_followed?(@user))) %>
+            <h3>
+                <a href="users/<%= @user.id%>/all_task">
+                    <%= @user.name %>の予定一覧
+                </a>
+            </h3>
+            <ul class="list-group list-group-flush">
+                <% @user.tasks.first(2).each do |user| %>
+                    <li class="list-group-item">
+                        <p class="d-block">
+                            <%= user.title %>
+                            <%= user.start_time.strftime("%m月%d日") %>
+                        <p>
+                    </li>
+                <% end %>
+            </ul>
         <% end %>
     </div>
     <div class="card-body">
@@ -24,5 +38,20 @@
             <% end %>
         <% end %> 
     </div>
-    
+    <div class="card-body">
+        <% unless @user.id == current_user.id %>
+            <% if (@user.already_followed?(current_user)) && (current_user.already_followed?(@user)) %>
+                <% if @is_room == true %>
+                    <p><a href="/rooms/<%= @room_id %>" class="btn btn-primary btn-sm">DMを送る</a></p>
+                <% else %>
+                    <%= form_for @room do |f| %>
+                        <%= fields_for @entry do |e|%>
+                            <%= e.hidden_field :user_id, value: @user.id %>
+                        <% end %>
+                        <%= f.submit "DM" %>
+                    <% end %>
+                <% end %>
+            <% end %>
+        <% end %>
+    </div>
 </div>

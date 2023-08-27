@@ -12,7 +12,11 @@ class User < ApplicationRecord
       # フォローされる側
       has_many :reverse_of_relationships, class_name: "Relationship", foreign_key: "follower_id", dependent: :destroy
       has_many :followers, through: :reverse_of_relationships, source: :following
-    
+    # entry,messageとのリレーション
+    has_many :entries, dependent: :destroy
+    has_many :messages, dependent: :destroy
+    # 画像を貼り付ける
+    has_one_attached :image
     #フォロー済か否かを判定
     def already_followed?(user)
       reverse_of_relationships.find_by(following_id: user.id).present?

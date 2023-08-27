@@ -5,12 +5,17 @@ Rails.application.routes.draw do
     root to: "homes#index"
     devise_for :users,  path: '', path_names: { sign_in: 'login', sign_out: 'logout'}
     resources :users do
+        member do
+            get :followings, :followers
+        end
         resource :relationships, only: [:create, :destroy]
-        get 'followings', on: :member
-        get 'followers', on: :member
     end
+    get 'users/:id/all_task', to: 'users#user_tasks'
 
-    resources :tasks, except: %i[index]
+    resources :tasks, except: [:index]
+    
+    resources :messages, only: [:create]
+    resources :rooms, only: [:create, :show]
     # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
     # Defines the root path route ("/")

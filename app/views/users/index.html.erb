@@ -1,4 +1,32 @@
 <% @users.each do |user| %>
-    <%= link_to user.name, user_path(user)%>
-    <%= user.profile %>
+    <div class="card" style="width: 18rem;">
+        <% if user.image.attached? %>
+            <%= image_tag user.image, class: "card-img-top" %>
+        <% else %>
+            <%= image_tag '/no-image.png', class: "card-img-top" %>
+        <% end %>
+        <div class="card-body">
+            <h5 class="card-title"><%= link_to user.name, user_path(user)%></h5>
+            <p class="card-text"><%= user.profile %></p>
+        </div>
+        <div class="card-body">
+            <% if user.id == current_user.id || ((user.already_followed?(current_user)) && (current_user.already_followed?(user))) %>
+                <h3>
+                    <a href="<%= user.id %>/all_task">
+                        <%= user.name %>の予定一覧
+                    </a>
+                </h3>
+                <ul class="list-group list-group-flush">
+                    <% user.tasks.first(2).each do |user| %>
+                        <li class="list-group-item">
+                            <p class="d-block">
+                                <%= user.title %>
+                                <%= user.start_time.strftime("%m月%d日") %>
+                            <p>
+                        </li>
+                    <% end %>
+                </ul>
+            <% end %>
+        </div>
+    </div>
 <% end %>
